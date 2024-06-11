@@ -1,0 +1,15 @@
+
+graph TD
+    A["av_register_all() {deprecated}"] --> B["avformat_alloc_context()"]
+    B --> C["avformat_open_input()"]
+    C --> D["avformat_find_stream_info()"]
+    D --> E["avcodec_find_decoder()"]
+    E --> F["avcodec_open2()"]
+    %%Initialize the AVCodecContext to use the given AVCodec%%
+    F --> G["av_read_frame()"]
+    G --> H{"Get Packet?"}
+    H -->|True| I["avcodec_decode_video2()"]
+    I --> J["AVFrame"]
+    J --> K["Show on Screen..."]
+    K --> G
+    H -->|False| L["Close..."]
