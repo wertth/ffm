@@ -12,7 +12,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 }
 int main() {
-    const char* filePath = "./assets/test.h265";
+    const char* filePath = "./assets/bigbuckbunny.h265";
     FILE * fp = fopen(filePath, "r");
 
 
@@ -74,30 +74,31 @@ int main() {
      drawer.setRender(window, renderer);
      drawer.setTexture(window, texture);
      AVPacket* packet = av_packet_alloc();
-     drawer.mainLoop([&]() -> bool {
+
+     // fps
+     AVRational  rational = codecContext->framerate;
+
+     drawer.mainLoop(window ,[&]() -> bool {
          if(av_read_frame(avFormatContext, packet) ==  0) {
              avcodec_send_packet(codecContext, packet);
              avcodec_receive_frame(codecContext, raw);
-
 
              sws_scale(swsContext, (uint8_t* const *)raw->data, raw->linesize, 0,
                        codecContext->height,
                        yuv->data,
                        yuv->linesize);
-             SDL_UpdateYUVTexture(texture, NULL, yuv->data[0],            // y plane
+             SDL_UpdateYUVTexture(texture, nullptr, yuv->data[0],            // y plane
                                   yuv->linesize[0],        // y pitch
                                   yuv->data[1],            // u plane
                                   yuv->linesize[1],        // u pitch
                                   yuv->data[2],            // v plane
                                   yuv->linesize[2]);
-//             printf("Decoded frame: width=%d, height=%d\n", raw->width, raw->height);
              return true;
          } else {
              av_packet_unref(packet);
              return false;
          }
-     });
-
+     }, rational.num / rational.den);
 
     sws_freeContext(swsContext);
     av_free(buffer);

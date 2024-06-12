@@ -13,9 +13,7 @@
 
 
 
-#include <stdio.h>
-
-#define __STDC_CONSTANT_MACROS
+#include <cstdio>
 
 #ifdef __cplusplus
 //Windows

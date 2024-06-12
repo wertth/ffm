@@ -7,31 +7,33 @@
 #include <SDL2/SDL.h>
 //#include "vector"
 #include <map>
+#include <thread>
+#include <future>
 // interface
 class DRAWER {
 public:
-//    DRAWER () = delete;
+    static uint32_t m_frameRate;
     virtual ~DRAWER() = default;
     virtual void draw() = 0;
     virtual void hide(void* window) = 0;
     virtual void show(void* window) = 0;
     virtual void setDrawDevice() = 0;
-    virtual void mainLoop(const std::function<bool()>& func) = 0;
 };
 
-//enum RUNNING_STATUS {
-//    running,
-//    pause,
-//    stop
-//};
 
 class SDL_DRAWER: public DRAWER{
 private:
     typedef struct {
-        SDL_Renderer* renderer;
-        SDL_Texture* texture;
+        std::shared_ptr<SDL_Renderer> renderer;
+        std::shared_ptr<SDL_Texture> texture;
+        std::function<void()> refreshFlow;
+        uint32_t frameRate;
     } windowMatchRenderContext;
-    std::map<SDL_Window*, windowMatchRenderContext* > m_windows{};
+
+    std::map<SDL_Window*, std::unique_ptr<windowMatchRenderContext>> m_windows{};
+
+    std::future<void> m_refresher;
+
     SDL_Window* m_active = nullptr;
     SDL_Event m_event {};
     SDL_bool running = SDL_FALSE;
@@ -43,16 +45,9 @@ public:
     inline
     void quit() {
         for(auto& [key, val]: m_windows) {
-            if(val->renderer) {
-                SDL_RenderClear(val->renderer);
-            }
-            if(val->texture) {
-                SDL_DestroyTexture(val->texture);
-            }
-            delete val;
             SDL_DestroyWindow(key);
-            SDL_Quit();
         }
+        SDL_Quit();
     }
 
     [[maybe_unused]]
@@ -64,7 +59,8 @@ public:
     void hide(void *window) override;
     void show(void *window) override;
     void setDrawDevice() override;
-    void mainLoop(const std::function<bool()>& func) override;
+    void mainLoop(SDL_Window* window , const std::function<bool()>& func, uint32_t frequency);
+
 };
 
 
