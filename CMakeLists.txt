@@ -21,6 +21,7 @@ add_subdirectory(simple_decoder)
 add_subdirectory(simple_sdl)
 add_subdirectory(yuv_sdl_player)
 add_subdirectory(video_player)
+add_subdirectory(ffplay_refactor)
 
 #target_include_directories(ffm  PRIVATE ${FFMPEG_INCLUDE_DIRS})
 #target_link_libraries(ffm PRIVATE fmt::fmt)

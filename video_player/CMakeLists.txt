@@ -14,7 +14,7 @@ add_custom_command(TARGET video_player POST_BUILD
 )
 find_package(SDL2 CONFIG REQUIRED)
 find_package(FFMPEG REQUIRED)
-#find_package(fmt REQUIRED)
+find_package(fmt REQUIRED)
 
 
 
@@ -23,4 +23,4 @@ target_link_libraries(video_player PRIVATE SDL2::SDL2)
 target_include_directories(video_player  PRIVATE ${FFMPEG_INCLUDE_DIRS})
 target_link_directories(video_player PRIVATE ${FFMPEG_LIBRARY_DIRS})
 target_link_libraries(video_player PRIVATE ${FFMPEG_LIBRARIES})
-#target_link_libraries(yuv_sdl_player PRIVATE fmt::fmt-header-only)
+target_link_libraries(video_player PRIVATE fmt::fmt)

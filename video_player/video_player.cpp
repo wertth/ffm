@@ -12,7 +12,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 }
 int main() {
-    const char* filePath = "./assets/bigbuckbunny.h265";
+    const char* filePath = "./assets/test.avi";
     FILE * fp = fopen(filePath, "r");
 
 
